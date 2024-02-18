@@ -1,24 +1,21 @@
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <stdio.h>
-#include <bcm2835.h>
+#include <wiringPi.h>
 
-#define PIN RPI_GPIO_P1_16
+#define PIN_BUTTON 16
 
 int main(){
-    if(!bcm2835_init()){
-        return 1;
-    }
-
-    bcm2835_gpio_fsel(PIN, BCM2835_GPIO_FSEL_INPT);
-    bcm2835_gpio_set_pud(PIN, BCM2835_GPIO_PUD_UP);
-
+    wiringPiSetupGpio();
+    pinMode(PIN_BUTTON, INPUT)
+    std::cout<<"SET UP PIN 16"<<std::endl;
     while(1){
-        uint8_t value = bcm2835_gpio_lev(PIN);
-        printf("read from pin 15: %d\n", value);
-        // wait a bit
-        delay(500);
+        if(digitalRead(PIN_BUTTON) == HIGH){
+            std::cout<<"PRESSED!"<<std::endl;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-
-    bcm2835_close();
+    
     return 0;
 }
