@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdio.h>
-#include <bcm2835>
+#include <bcm2835.h>
 
 #define PIN RPI_GPIO_P1_16
 
