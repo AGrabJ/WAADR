@@ -8,7 +8,7 @@
 
 int main(){
     wiringPiSetupGpio();
-    pinMode(PIN_BUTTON, INPUT)
+    pinMode(PIN_BUTTON, INPUT);
     std::cout<<"SET UP PIN 16"<<std::endl;
     while(1){
         if(digitalRead(PIN_BUTTON) == HIGH){
