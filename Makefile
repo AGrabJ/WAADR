@@ -6,8 +6,10 @@ RGB_LIBRARY_NAME=rgbmatrix
 RGB_LIBRARY=$(RGB_LIBDIR)/lib$(RGB_LIBRARY_NAME).a
 LDFLAGS+=-L$(RGB_LIBDIR) -l$(RGB_LIBRARY_NAME) -lrt -lm -lpthread
 
+main : main.c $(RGB_LIBRARY)
+	c++ -o main main.c $(LDFLAGS)
+
 $(RGB_LIBRARY):
 	$(MAKE) -C $(RGB_LIBDIR)
 
-main : main.c $(RGB_LIBRARY)
-	c++ -o main main.c $(LDFLAGS)
+
