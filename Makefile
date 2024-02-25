@@ -15,6 +15,8 @@ waadr : $(OBJECTS) $(RGB_LIBRARY)
 $(RGB_LIBRARY):
 	$(MAKE) -C $(RGB_LIBDIR)
 
+waadr.o : waadr.cpp
+
 %.o : %.cc
 	$(CXX) -I$(RGB_INCDIR) -c -o $@ $<
 
