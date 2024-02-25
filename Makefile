@@ -17,7 +17,7 @@ $(RGB_LIBRARY):
 
 waadr.o : waadr.cpp
 
-%.o : %.cc
+%.o : %.cpp
 	$(CXX) -I$(RGB_INCDIR) -c -o $@ $<
 
 
