@@ -2,10 +2,15 @@
 #include <chrono>
 #include <thread>
 #include <stdio.h>
+#include <Magick++.h>
 #include <wiringPi.h>
 #include "led-matrix.h"
 
 #define PIN_BUTTON 16
+
+using rgb_matrix::RGBMatrix;
+using rgb_matrix::Canvas;
+
 
 int main(){
     wiringPiSetupGpio();
