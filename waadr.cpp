@@ -2,7 +2,6 @@
 #include <chrono>
 #include <thread>
 #include <stdio.h>
-#include <Magick++.h>
 #include <wiringPi.h>
 #include "led-matrix.h"
 
