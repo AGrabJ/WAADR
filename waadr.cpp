@@ -7,19 +7,21 @@
 
 #define PIN_BUTTON 16
 
-using rgb_matrix::RGBMatrix;
 using rgb_matrix::Canvas;
+using rgb_matrix::RGBMatrix;
 
-
-int main(){
+int main()
+{
     wiringPiSetupGpio();
     pinMode(PIN_BUTTON, INPUT);
 
-    std::cout<<"SET UP PIN 16!"<<std::endl;
+    std::cout << "SET UP PIN 16!" << std::endl;
 
-    while(1){
-        if(digitalRead(PIN_BUTTON) == HIGH){
-            std::cout<<"PRESSED!"<<std::endl;
+    while (1)
+    {
+        if (digitalRead(PIN_BUTTON) == HIGH)
+        {
+            std::cout << "PRESSED!" << std::endl; // When the button is pressed, the message "Pressed!" will be printed
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
