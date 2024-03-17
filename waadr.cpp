@@ -117,53 +117,51 @@ void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
 
 // Main function definition ------------------------
 
-int main()
+int main(int argc, char *argv[])
 {
     // int input;
     // wiringPiSetupGpio();
     // DeviceState waadr;
 
     // Magick
-    Magick::InitializieMagick(*argv);
+    Magick::InitializieMagick(NULL);
 
     // Initialize the RGB matrix with
     RGBMatrix::Options matrix_options;
     rgb_matrix::RuntimeOptions runtime_opt;
 
-    if (!rgb_matrix::ParseOptionsFromFlags(&argc, &argv, &matrix_options, &runtime_opt))
-    {
-        return usage(argv[0]);
-    }
+    // if (!rgb_matrix::ParseOptionsFromFlags(&argc, &argv, &matrix_options, &runtime_opt))
+    // {
+    //     return usage(argv[0]);
+    // }
 
-    if (argc != 2)
-        return usage(argv[0]);
-    const char *filename = argv[1];
+    // if (argc != 2)
+    //     return usage(argv[0]);
+
+    const char *filename = "sigils\6.ppm"; // Random sigil for testing loading
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
-    RGBMatrix *matrix = RGBMatrix::CreateFromOptions(matrix_options, runtime_opt);
+    // RGBMatrix *matrix = RGBMatrix::CreateFromOptions(matrix_options, runtime_opt);
+    // if (matrix == NULL)
+    //     return 1;
+
+    RGBMatrix *matrix = RGBMatrix::CreateFromFlags(matrix_options, runtime_opt);
     if (matrix == NULL)
         return 1;
 
-    ImageVector images = LoadImageAndScaleImage(filename, matrix->width(), matrix->height());
+    ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
     if (image.size() == 0)
     {
+        fprintf(stderr, "Failed to Load image.\n");
+        return 1;
     }
-    switch (images.size())
-    {
 
-    case 0: // failed to load image.
-        break;
-    case 1: // Simple example: one image to show
-        CopyImageToCanvas(images[0], matrix);
-        while (!interrupt_received)
-            sleep(1000); // Until Ctrl-C is pressed
-        break;
-    default: // More than one image: this is an animation.
-        ShowAnimatedImage(images, matrix);
-        break;
-    }
+    CopyImageToCanvas(images[0], matrix);
+
+    while (!interrupt_received) // Look until ctrl-c pressed
+        sleep(1000);
 
     matrix->Clear();
     delete matrix;
