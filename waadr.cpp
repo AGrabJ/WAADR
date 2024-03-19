@@ -138,6 +138,13 @@ int main(int argc, char *argv[])
     // if (argc != 2)
     //     return usage(argv[0]);
 
+    RGBMatrix::Options defaults;
+    defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
+    defaults.rows = 32;
+    defaults.chain_length = 1;
+    defaults.parallel = 1;
+    defaults.show_refresh_rate = true;
+
     const char *filename = "sigils\6.ppm"; // Random sigil for testing loading
 
     signal(SIGTERM, InterruptHandler);
@@ -165,6 +172,7 @@ int main(int argc, char *argv[])
 
     matrix->Clear();
     delete matrix;
+
     /*
     initialize EVERYTHING: DeviceState object, screen, etc. (consider initializing screen as part of DeviceState object, in the constructor)
     while(true) loop
