@@ -81,14 +81,14 @@ class DeviceState
 public:
     DeviceState();
     ~DeviceState();
-    void updateScreen(int);
+    void updateScreen(int);//updates screen given button pressed as a parameter
 
 private:
     int currState; //currState is 0 if on main menu, 1 if displaying sigil, 2 if pinging, 3 if listening
-    int sigilState;
     int currSel;
+    int sigilState;
     bool pingState;
-    void loadSigil(std::string);
+    void loadSigil(std::string);//loads a particular sigil when given the path as a parameter
     void pingOut();
     void drawMenu();
     RGBMatrix *matrix;
