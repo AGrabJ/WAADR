@@ -133,7 +133,7 @@ void DeviceState::updateScreen(int buttonPressed)
         } else if (buttonPressed == 1){
 
         } else if(buttonPressed == 2){
-            std::string fullPath = "sigils/" + std::to_string((currSel+1)) ".ppm";
+            std::string fullPath = "sigils/" + std::to_string((currSel+1)) + ".ppm";
             loadSigil(fullPath);
         }
     }
