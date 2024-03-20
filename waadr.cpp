@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <exception>
 #include <utility>
-#include <string.h>
+#include <string>
 
 const int buttonPins[4] = {1, 2, 3, 4}; // ADJUST WITH BUTTON PINS (BCM)
 
@@ -128,8 +128,13 @@ void DeviceState::updateScreen(int buttonPressed)
 {
     //button pressed: 0 = up, 1 = down, 2 = select, 3 = 
     if(currentState == 0){//main menu logic
-        if(currSel == 0 && buttonPressed == 2){
-            loadSigil("sigils/1.ppm");
+        if(buttonPressed == 0){
+
+        } else if (buttonPressed == 1){
+
+        } else if(buttonPressed == 2){
+            std::string fullPath = "sigils/" + to_string((currSel+1)) ".ppm";
+            loadSigil(fullPath);
         }
     }
 }
