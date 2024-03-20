@@ -63,6 +63,11 @@ void DeviceState::pingOut()
 
 // Load sigil test ------------------------
 
+volatile bool interrupt_received = false;
+static void InterruptHandler(int signo)
+{
+    interrupt_received = true;
+}
 using ImageVector = std::vector<Magick::Image>;
 // load the image and scale to size of matrix
 static ImageVector LoadImage(const char *filename, int width, int height)
