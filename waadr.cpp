@@ -134,7 +134,6 @@ int main(int argc, char *argv[])
     Magick::InitializeMagick(NULL);
 
     // Initialize the RGB matrix with
-    RGBMatrix::Options matrix_options;
     rgb_matrix::RuntimeOptions runtime_opt;
 
     // if (!rgb_matrix::ParseOptionsFromFlags(&argc, &argv, &matrix_options, &runtime_opt))
@@ -147,18 +146,17 @@ int main(int argc, char *argv[])
 
     RGBMatrix::Options defaults;
     defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
-    defaults.rows = 32;
+    defaults.rows = 16;
     defaults.chain_length = 1;
     defaults.parallel = 1;
     defaults.show_refresh_rate = true;
-    defaults.cols = 16;
 
     const char *filename = "sigils/6.ppm"; // Random sigil for testing loading
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
-    RGBMatrix *matrix = RGBMatrix::CreateFromOptions(matrix_options, runtime_opt);
+    RGBMatrix *matrix = RGBMatrix::CreateFromOptions(defaults, runtime_opt);
     if (matrix == NULL)
         return 1;
 
