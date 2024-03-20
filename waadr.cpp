@@ -88,7 +88,7 @@ private:
     int sigilState;
     int currSel;
     bool pingState;
-    void loadSigil();
+    void loadSigil(std::string);
     void pingOut();
     void drawMenu();
     RGBMatrix *matrix;
@@ -112,6 +112,7 @@ DeviceState::DeviceState()
     }
 
     currentState = 0;
+    currSel = 0;
     drawMenu();
         
 }
