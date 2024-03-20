@@ -14,15 +14,22 @@
 #include <utility>
 #include <string.h>
 
-const int buttonPins[4] = {1, 2, 3, 4}; // ADJUST WITH BUTTON PINS (BCM)
-
 using rgb_matrix::Canvas;
 using rgb_matrix::RGBMatrix;
 
-// using rgb_matrix::FrameCanvas; // For scrolling images
+// Global definitions ------------------------
+
+const int buttonPins[4] = {1, 2, 3, 4}; // ADJUST WITH BUTTON PINS (BCM)
+
+volatile bool interrupt_received = false;
+static void InterruptHandler(int signo)
+{
+    interrupt_received = true;
+}
+
+// Supporting image function definitions ------------------------
 
 using ImageVector = std::vector<Magick::Image>;
-// load the image and scale to size of matrix
 static ImageVector LoadImage(const char *filename, int width, int height)
 {
     ImageVector result;
@@ -55,7 +62,6 @@ static ImageVector LoadImage(const char *filename, int width, int height)
 
     return result;
 }
-
 void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
 {
     const int offset_x = 0, offset_y = 0;
@@ -86,10 +92,7 @@ public:
 private:
     int currState; //currState is 0 if on main menu, 1 if displaying sigil, 2 if pinging, 3 if listening
     int currSel;
-    int sigilState;
-    bool pingState;
     void loadSigil(std::string);//loads a particular sigil when given the path as a parameter
-    void pingOut();
     void drawMenu();
     RGBMatrix *matrix;
 };
@@ -98,7 +101,7 @@ private:
 
 DeviceState::DeviceState()
 {   
-    // Initialize the RGB matrix with
+    // Initialize the RGB matrix
     rgb_matrix::RuntimeOptions runtime_opt;
     RGBMatrix::Options defaults;
     defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
@@ -111,6 +114,7 @@ DeviceState::DeviceState()
         exit(1);
     }
 
+    //set default state of the device upon startup
     currState = 0;
     currSel = 0;
     drawMenu();
@@ -126,22 +130,23 @@ DeviceState::~DeviceState()
 
 void DeviceState::updateScreen(int buttonPressed)
 {
-    //button pressed: 0 = up, 1 = down, 2 = select, 3 = 
-    if(currState == 0){//main menu logic
+    //buttonPressed: 0 = up, 1 = down, 2 = select, 3 = ping enable/disable
+    if(currState == 0){// Main menu logic
         if(buttonPressed == 0){
 
         } else if (buttonPressed == 1){
 
-        } else if(buttonPressed == 2){
+        } else if(buttonPressed == 2){//Sigil option selected
+            matrix->Clear();
             std::string fullPath = "sigils/" + std::to_string((currSel+1)) + ".ppm";
             loadSigil(fullPath);
             currState = 1;
         }
     }
+
 }
 
 void DeviceState::drawMenu(){
-
 }
 
 void DeviceState::loadSigil(std::string path)
@@ -158,19 +163,6 @@ void DeviceState::loadSigil(std::string path)
     CopyImageToCanvas(images[0], matrix);
 }
 
-void DeviceState::pingOut()
-{
-}
-
-// Load sigil test ------------------------
-
-volatile bool interrupt_received = false;
-static void InterruptHandler(int signo)
-{
-    interrupt_received = true;
-}
-
-// ------------------------
 
 // Main function definition ------------------------
 
@@ -189,14 +181,6 @@ int main(int argc, char *argv[])
 
     while (!interrupt_received) // Look until ctrl-c pressed
         sleep(1000);
-
-    /*
-    initialize EVERYTHING: DeviceState object, screen, etc. (consider initializing screen as part of DeviceState object, in the constructor)
-    while(true) loop
-        checks button state at beginning of loop, maybe use a switch or if-else conditional
-        runs updateScreen(buttonPressed) repeatedly. depending on the buttonPressed, updateScreen accordingly
-        sleep_for a certain amount of milliseconds to prevent burning out processor
-    */
 
     // while (true)
     // {
