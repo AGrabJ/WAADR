@@ -84,7 +84,7 @@ public:
     void updateScreen(int);
 
 private:
-    int currentState; //currentState is 0 if on main menu, 1 if pinging
+    int currState; //currentState is 0 if on main menu, 1 if pinging
     int sigilState;
     int currSel;
     bool pingState;
@@ -111,7 +111,7 @@ DeviceState::DeviceState()
         exit(1);
     }
 
-    currentState = 0;
+    currState = 0;
     currSel = 0;
     drawMenu();
         
@@ -127,7 +127,7 @@ DeviceState::~DeviceState()
 void DeviceState::updateScreen(int buttonPressed)
 {
     //button pressed: 0 = up, 1 = down, 2 = select, 3 = 
-    if(currentState == 0){//main menu logic
+    if(currState == 0){//main menu logic
         if(buttonPressed == 0){
 
         } else if (buttonPressed == 1){
@@ -135,6 +135,7 @@ void DeviceState::updateScreen(int buttonPressed)
         } else if(buttonPressed == 2){
             std::string fullPath = "sigils/" + std::to_string((currSel+1)) + ".ppm";
             loadSigil(fullPath);
+            currState
         }
     }
 }
