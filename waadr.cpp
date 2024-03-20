@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
     defaults.chain_length = 1;
     defaults.parallel = 1;
     defaults.show_refresh_rate = true;
+    defaults.cols = 16;
 
     const char *filename = "sigils/6.ppm"; // Random sigil for testing loading
 
