@@ -34,23 +34,47 @@ private:
     bool pingState;
     void loadSigil();
     void pingOut();
-    // initialize LED matrix object? LEXIE!!
+    RGBMatrix *matrix;
 };
 
 // DeviceState class functions
 
 DeviceState::DeviceState()
 {
-    // initialize LED matrix canvas n stuff. :3
+    // Initialize the RGB matrix with
+    rgb_matrix::RuntimeOptions runtime_opt;
+    RGBMatrix::Options defaults;
+    defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
+    defaults.rows = 16;
+    defaults.chain_length = 1;
+    defaults.parallel = 1;
+    matrix = RGBMatrix::CreateFromOptions(defaults, runtime_opt);
+    if (matrix == NULL){
+        perror("Error creating matrix object");
+        exit(1);
+    }
+        
 }
 
 DeviceState::~DeviceState()
 {
-    //
+    //Clear and destroy matrix
+    matrix->Clear();
+    delete matrix;
 }
 
 void DeviceState::updateScreen(int buttonPressed)
 {
+    const char *filename = "sigils/5.ppm"; // Random sigil for testing loading
+
+    ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
+    if (images.size() == 0)
+    {
+        fprintf(stderr, "Failed to Load image.\n");
+        return 1;
+    }
+
+    CopyImageToCanvas(images[0], matrix);
 }
 
 void DeviceState::loadSigil()
@@ -126,59 +150,29 @@ void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
 
 int main(int argc, char *argv[])
 {
-    // int input;
-    // wiringPiSetupGpio();
-    // DeviceState waadr;
-
-    // Magick
+    wiringPiSetupGpio();
     Magick::InitializeMagick(NULL);
 
-    // Initialize the RGB matrix with
-    rgb_matrix::RuntimeOptions runtime_opt;
-
-    // if (!rgb_matrix::ParseOptionsFromFlags(&argc, &argv, &matrix_options, &runtime_opt))
-    // {
-    //     return usage(argv[0]);
-    // }
-
-    // if (argc != 2)
-    //     return usage(argv[0]);
-
-    RGBMatrix::Options defaults;
-    defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
-    defaults.rows = 16;
-    defaults.chain_length = 1;
-    defaults.parallel = 1;
-    defaults.show_refresh_rate = true;
-
-    const char *filename = "sigils/5.ppm"; // Random sigil for testing loading
+    DeviceState waadr;
+    int input;
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
-    RGBMatrix *matrix = RGBMatrix::CreateFromOptions(defaults, runtime_opt);
-    if (matrix == NULL)
-        return 1;
+    //RGBMatrix *matrix = RGBMatrix::CreateFromOptions(defaults, runtime_opt);
+    
 
     //RGBMatrix *matrix = RGBMatrix::CreateFromFlags(matrix_options, runtime_opt);
     //if (matrix == NULL)
     //    return 1;
 
-    ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
-    if (images.size() == 0)
-    {
-        fprintf(stderr, "Failed to Load image.\n");
-        return 1;
-    }
-
-    CopyImageToCanvas(images[0], matrix);
+    waadr.updateScreen(1);
 
     while (!interrupt_received) // Look until ctrl-c pressed
         sleep(1000);
 
-    matrix->Clear();
-    delete matrix;
-
+    
+    delete waadr;
     /*
     initialize EVERYTHING: DeviceState object, screen, etc. (consider initializing screen as part of DeviceState object, in the constructor)
     while(true) loop
