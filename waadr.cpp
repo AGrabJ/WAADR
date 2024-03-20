@@ -35,7 +35,7 @@ private:
     void loadSigil();
     void pingOut();
     // initialize LED matrix object? LEXIE!!
-}
+};
 
 // DeviceState class functions
 
@@ -77,7 +77,7 @@ static ImageVector LoadImage(const char *filename, int width, int height)
     {
         if (e.what())
         {
-            fprint(stderr, "%s\n", e.what());
+            fprintf(stderr, "%s\n", e.what());
         }
         return result;
     }
@@ -106,7 +106,7 @@ void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
             const Magick::Color &c = image.pixelColor(x, y);
             if (c.alphaQuantum() < 256)
             {
-                canvas->SetPixel(x + offset_x, y + offset_y, ScaleQuantumToChar(c.redQuantum()), ScaleToQuantumToChar(c.greenQuantum()),
+                canvas->SetPixel(x + offset_x, y + offset_y, ScaleQuantumToChar(c.redQuantum()), ScaleQuantumToChar(c.greenQuantum()),
                                  ScaleQuantumToChar(c.blueQuantum()));
             }
         }
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     // DeviceState waadr;
 
     // Magick
-    Magick::InitializieMagick(NULL);
+    Magick::InitializeMagick(NULL);
 
     // Initialize the RGB matrix with
     RGBMatrix::Options matrix_options;
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 
     RGBMatrix::Options defaults;
     defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
-    defaults.rows = 32;
+    defaults.rows = 16;
     defaults.chain_length = 1;
     defaults.parallel = 1;
     defaults.show_refresh_rate = true;
