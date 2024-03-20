@@ -161,20 +161,11 @@ int main(int argc, char *argv[])
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
-    //RGBMatrix *matrix = RGBMatrix::CreateFromOptions(defaults, runtime_opt);
-    
-
-    //RGBMatrix *matrix = RGBMatrix::CreateFromFlags(matrix_options, runtime_opt);
-    //if (matrix == NULL)
-    //    return 1;
-
     waadr.updateScreen(1);
 
     while (!interrupt_received) // Look until ctrl-c pressed
         sleep(1000);
 
-    
-    delete waadr;
     /*
     initialize EVERYTHING: DeviceState object, screen, etc. (consider initializing screen as part of DeviceState object, in the constructor)
     while(true) loop
