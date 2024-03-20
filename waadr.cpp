@@ -11,6 +11,8 @@
 #include <signal.h>
 #include <unistd.h>
 #include <exception>
+#include <utility>
+#include <string.h>
 
 const int buttonPins[4] = {1, 2, 3, 4}; // ADJUST WITH BUTTON PINS (BCM)
 
@@ -82,18 +84,20 @@ public:
     void updateScreen(int);
 
 private:
-    int currentState;
+    int currentState; //currentState is 0 if on main menu, 1 if pinging
     int sigilState;
+    int currSel;
     bool pingState;
     void loadSigil();
     void pingOut();
+    void drawMenu();
     RGBMatrix *matrix;
 };
 
 // DeviceState class functions
 
 DeviceState::DeviceState()
-{
+{   
     // Initialize the RGB matrix with
     rgb_matrix::RuntimeOptions runtime_opt;
     RGBMatrix::Options defaults;
@@ -106,6 +110,9 @@ DeviceState::DeviceState()
         perror("Error creating matrix object");
         exit(1);
     }
+
+    currentState = 0;
+    drawMenu();
         
 }
 
@@ -118,7 +125,21 @@ DeviceState::~DeviceState()
 
 void DeviceState::updateScreen(int buttonPressed)
 {
-    const char *filename = "sigils/5.ppm"; // Random sigil for testing loading
+    //button pressed: 0 = up, 1 = down, 2 = select, 3 = 
+    if(currentState == 0){//main menu logic
+        if(currSel == 0 && buttonPressed == 2){
+            loadSigil("sigils/1.ppm");
+        }
+    }
+}
+
+void DeviceState::drawMenu(){
+
+}
+
+void DeviceState::loadSigil(std::string path)
+{
+    const char *filename = path.data(); // Random sigil for testing loading
 
     ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
     if (images.size() == 0)
@@ -128,10 +149,6 @@ void DeviceState::updateScreen(int buttonPressed)
     }
 
     CopyImageToCanvas(images[0], matrix);
-}
-
-void DeviceState::loadSigil()
-{
 }
 
 void DeviceState::pingOut()
@@ -161,7 +178,7 @@ int main(int argc, char *argv[])
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
-    waadr.updateScreen(1);
+    waadr.updateScreen(2);
 
     while (!interrupt_received) // Look until ctrl-c pressed
         sleep(1000);
