@@ -19,6 +19,59 @@ using rgb_matrix::RGBMatrix;
 
 // using rgb_matrix::FrameCanvas; // For scrolling images
 
+using ImageVector = std::vector<Magick::Image>;
+// load the image and scale to size of matrix
+static ImageVector LoadImage(const char *filename, int width, int height)
+{
+    ImageVector result;
+    ImageVector frames;
+    try
+    {
+        readImages(&frames, filename);
+    }
+    catch (std::exception &e)
+    {
+        if (e.what())
+        {
+            fprintf(stderr, "%s\n", e.what());
+        }
+        return result;
+    }
+
+    if (frames.empty())
+    {
+        fprintf(stderr, "No Image found");
+        return result;
+    }
+
+    result.push_back(frames[0]);
+
+    for (Magick::Image &image : result)
+    {
+        image.scale(Magick::Geometry(width, height));
+    }
+
+    return result;
+}
+
+void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
+{
+    const int offset_x = 0, offset_y = 0;
+    for (size_t y = 0; y < image.rows(); ++y)
+    {
+        for (size_t x = 0; x < image.columns(); ++x)
+        {
+            const Magick::Color &c = image.pixelColor(x, y);
+            if (c.alphaQuantum() < 256)
+            {
+                canvas->SetPixel(x + offset_x, y + offset_y, ScaleQuantumToChar(c.redQuantum()), ScaleQuantumToChar(c.greenQuantum()),
+                                 ScaleQuantumToChar(c.blueQuantum()));
+            }
+        }
+    }
+}
+
+
 // DeviceState class definition ------------------------
 
 class DeviceState
@@ -71,7 +124,7 @@ void DeviceState::updateScreen(int buttonPressed)
     if (images.size() == 0)
     {
         fprintf(stderr, "Failed to Load image.\n");
-        return 1;
+        exit(1);
     }
 
     CopyImageToCanvas(images[0], matrix);
@@ -91,57 +144,6 @@ volatile bool interrupt_received = false;
 static void InterruptHandler(int signo)
 {
     interrupt_received = true;
-}
-using ImageVector = std::vector<Magick::Image>;
-// load the image and scale to size of matrix
-static ImageVector LoadImage(const char *filename, int width, int height)
-{
-    ImageVector result;
-    ImageVector frames;
-    try
-    {
-        readImages(&frames, filename);
-    }
-    catch (std::exception &e)
-    {
-        if (e.what())
-        {
-            fprintf(stderr, "%s\n", e.what());
-        }
-        return result;
-    }
-
-    if (frames.empty())
-    {
-        fprintf(stderr, "No Image found");
-        return result;
-    }
-
-    result.push_back(frames[0]);
-
-    for (Magick::Image &image : result)
-    {
-        image.scale(Magick::Geometry(width, height));
-    }
-
-    return result;
-}
-
-void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
-{
-    const int offset_x = 0, offset_y = 0;
-    for (size_t y = 0; y < image.rows(); ++y)
-    {
-        for (size_t x = 0; x < image.columns(); ++x)
-        {
-            const Magick::Color &c = image.pixelColor(x, y);
-            if (c.alphaQuantum() < 256)
-            {
-                canvas->SetPixel(x + offset_x, y + offset_y, ScaleQuantumToChar(c.redQuantum()), ScaleQuantumToChar(c.greenQuantum()),
-                                 ScaleQuantumToChar(c.blueQuantum()));
-            }
-        }
-    }
 }
 
 // ------------------------
