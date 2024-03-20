@@ -99,6 +99,8 @@ static ImageVector LoadImage(const char *filename, int width, int height)
     {
         image.scale(Magick::Geometry(width, height));
     }
+
+    return result;
 }
 
 void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
@@ -155,16 +157,16 @@ int main(int argc, char *argv[])
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
-    // RGBMatrix *matrix = RGBMatrix::CreateFromOptions(matrix_options, runtime_opt);
-    // if (matrix == NULL)
-    //     return 1;
-
-    RGBMatrix *matrix = RGBMatrix::CreateFromFlags(matrix_options, runtime_opt);
+    RGBMatrix *matrix = RGBMatrix::CreateFromOptions(matrix_options, runtime_opt);
     if (matrix == NULL)
         return 1;
 
+    //RGBMatrix *matrix = RGBMatrix::CreateFromFlags(matrix_options, runtime_opt);
+    //if (matrix == NULL)
+    //    return 1;
+
     ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
-    if (image.size() == 0)
+    if (images.size() == 0)
     {
         fprintf(stderr, "Failed to Load image.\n");
         return 1;
