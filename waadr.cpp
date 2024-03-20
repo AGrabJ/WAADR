@@ -84,7 +84,7 @@ public:
     void updateScreen(int);
 
 private:
-    int currState; //currentState is 0 if on main menu, 1 if pinging
+    int currState; //currState is 0 if on main menu, 1 if displaying sigil, 2 if pinging, 3 if listening
     int sigilState;
     int currSel;
     bool pingState;
@@ -135,7 +135,7 @@ void DeviceState::updateScreen(int buttonPressed)
         } else if(buttonPressed == 2){
             std::string fullPath = "sigils/" + std::to_string((currSel+1)) + ".ppm";
             loadSigil(fullPath);
-            currState
+            currState = 1;
         }
     }
 }
