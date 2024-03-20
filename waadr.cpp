@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
     defaults.parallel = 1;
     defaults.show_refresh_rate = true;
 
-    const char *filename = "sigils\6.ppm"; // Random sigil for testing loading
+    const char *filename = "sigils/6.ppm"; // Random sigil for testing loading
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
