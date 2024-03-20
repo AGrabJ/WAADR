@@ -16,8 +16,13 @@ const int buttonPins[4] = {1, 2, 3, 4}; // ADJUST WITH BUTTON PINS (BCM)
 
 using rgb_matrix::Canvas;
 using rgb_matrix::RGBMatrix;
+using ImageVector = std::vector<Magick::Image>;
 
-// using rgb_matrix::FrameCanvas; // For scrolling images
+volatile bool interrupt_received = false;
+static void InterruptHandler(int signo)
+{
+    interrupt_received = true;
+}
 
 // DeviceState class definition ------------------------
 
@@ -61,15 +66,8 @@ void DeviceState::pingOut()
 {
 }
 
-// Load sigil test ------------------------
+// Assisting functions for image loading ------------------------
 
-volatile bool interrupt_received = false;
-static void InterruptHandler(int signo)
-{
-    interrupt_received = true;
-}
-using ImageVector = std::vector<Magick::Image>;
-// load the image and scale to size of matrix
 static ImageVector LoadImage(const char *filename, int width, int height)
 {
     ImageVector result;
@@ -120,8 +118,6 @@ void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas)
     }
 }
 
-// ------------------------
-
 // Main function definition ------------------------
 
 int main(int argc, char *argv[])
@@ -129,40 +125,23 @@ int main(int argc, char *argv[])
     // int input;
     // wiringPiSetupGpio();
     // DeviceState waadr;
+    signal(SIGTERM, InterruptHandler);
+    signal(SIGINT, InterruptHandler);
 
     // Magick
     Magick::InitializeMagick(NULL);
 
     // Initialize the RGB matrix with
     rgb_matrix::RuntimeOptions runtime_opt;
-
-    // if (!rgb_matrix::ParseOptionsFromFlags(&argc, &argv, &matrix_options, &runtime_opt))
-    // {
-    //     return usage(argv[0]);
-    // }
-
-    // if (argc != 2)
-    //     return usage(argv[0]);
-
     RGBMatrix::Options defaults;
-    defaults.hardware_mapping = "regular"; // or e.g. "adafruit-hat"
+    defaults.hardware_mapping = "regular";
     defaults.rows = 16;
     defaults.chain_length = 1;
     defaults.parallel = 1;
-    defaults.show_refresh_rate = true;
 
     const char *filename = "sigils/5.ppm"; // Random sigil for testing loading
 
-    signal(SIGTERM, InterruptHandler);
-    signal(SIGINT, InterruptHandler);
-
-    RGBMatrix *matrix = RGBMatrix::CreateFromOptions(defaults, runtime_opt);
-    if (matrix == NULL)
-        return 1;
-
-    //RGBMatrix *matrix = RGBMatrix::CreateFromFlags(matrix_options, runtime_opt);
-    //if (matrix == NULL)
-    //    return 1;
+    
 
     ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
     if (images.size() == 0)
