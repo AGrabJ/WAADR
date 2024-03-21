@@ -6,7 +6,6 @@
 #include "led-matrix.h"
 #include <Magick++.h>
 #include <magick/image.h>
-// additional libraries - tbd
 #include <math.h>
 #include <signal.h>
 #include <unistd.h>
@@ -92,7 +91,7 @@ public:
 private:
     int currState; //currState is 0 if on main menu, 1 if displaying sigil, 2 if pinging, 3 if listening
     int currSel;
-    void loadSigil(std::string);//loads a particular sigil when given the path as a parameter
+    void drawSigil(std::string);//loads a particular sigil when given the path as a parameter
     void drawMenu();
     RGBMatrix *matrix;
 };
@@ -133,15 +132,33 @@ void DeviceState::updateScreen(int buttonPressed)
     //buttonPressed: 0 = up, 1 = down, 2 = select, 3 = ping enable/disable
     if(currState == 0){// Main menu logic
         if(buttonPressed == 0){
-
+            if(currSel < 7){
+                currSel++;
+                drawMenu();
+            }
         } else if (buttonPressed == 1){
+            if(currSel>0){
+                currSel--;
+                drawMenu();
+            }
 
-        } else if(buttonPressed == 2){//Sigil option selected
-            matrix->Clear();
+        } else if(buttonPressed == 2){
+            //Sigil option selected
+            
             std::string fullPath = "sigils/" + std::to_string((currSel+1)) + ".ppm";
-            loadSigil(fullPath);
+            drawSigil(fullPath);
             currState = 1;
+        } else if(buttonPressed == 3){
+            
         }
+    } else if(currState == 1){//Sigil display logic
+        //If a sigil is being displayed, return to main menu
+        drawMenu();
+        currState = 0;
+    } else if(currState == 2){
+
+    } else if(currState == 3){
+
     }
 
 }
@@ -149,9 +166,11 @@ void DeviceState::updateScreen(int buttonPressed)
 void DeviceState::drawMenu(){
 }
 
-void DeviceState::loadSigil(std::string path)
+void DeviceState::drawSigil(std::string path)
 {
     const char *filename = path.data(); // Random sigil for testing loading
+
+    matrix->Clear();
 
     ImageVector images = LoadImage(filename, matrix->width(), matrix->height());
     if (images.size() == 0)
@@ -172,35 +191,37 @@ int main(int argc, char *argv[])
     Magick::InitializeMagick(NULL);
 
     DeviceState waadr;
-    int input;
+    int input, prevInput;
+    prevInput = -1;
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
 
     waadr.updateScreen(2);
 
-    while (!interrupt_received) // Look until ctrl-c pressed
-        sleep(1000);
 
-    // while (true)
-    // {
-    //     input = -1;
-    //     for (int i = 0; i < 4; i++)
-    //     {
-    //         if (digitalRead(buttonPins[i]) == HIGH)
-    //         {
-    //             input = i;
-    //             break;
-    //         }
-    //     }
 
-    //     if (i >= 0)
-    //     {
-    //         waadr.updateScreen(i);
-    //     }
+    //Note for vina for later: FOR LOOP BELOW, consider the possibility of a button being held. do not repeat input in that case.
+    while (!interrupt_received)
+    {
+        input = -1;
+        for (int i = 0; i < 4; i++)
+        {
+            if (digitalRead(buttonPins[i]) == HIGH)
+            {
+                input = i;
+                break;
+            }
+        }
 
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    // }
+        if (input >= 0 && input != prevInput)
+        {
+            waadr.updateScreen(input);
+            prevInput = input;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 
     return 0;
 }
