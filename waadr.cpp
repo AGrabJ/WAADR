@@ -164,6 +164,8 @@ void DeviceState::updateScreen(int buttonPressed)
 }
 
 void DeviceState::drawMenu(){
+    //draw main menu here
+    //border or highlight the element corresponding to the currSel
 }
 
 void DeviceState::drawSigil(std::string path)
@@ -176,7 +178,7 @@ void DeviceState::drawSigil(std::string path)
     if (images.size() == 0)
     {
         fprintf(stderr, "Failed to Load image.\n");
-        exit(1);
+        exit(2);
     }
 
     CopyImageToCanvas(images[0], matrix);
@@ -196,10 +198,6 @@ int main(int argc, char *argv[])
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
-
-    waadr.updateScreen(2);
-
-
 
     //Note for vina for later: FOR LOOP BELOW, consider the possibility of a button being held. do not repeat input in that case.
     while (!interrupt_received)
