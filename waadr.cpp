@@ -91,10 +91,10 @@ public:
 private:
     int currState; //currState is 0 if on main menu, 1 if displaying sigil, 2 if pinging, 3 if listening
     int currSel;
-    int optionPos[8][2] = {{0,0},{0,4},{0,8},{0,12},{21,0},{21,4},{21,8},{21,12}};
+    int optionPos[8][2] = {{0,0},{0,4},{0,8},{0,12},{23,0},{23,4},{23,8},{23,12}};
     int optionColor[3] = {0,255,0};
     int selColor[3] = {255,255,255};
-    int optionSize[2] = {10,4};
+    int optionSize[2] = {8,4};
     void drawSigil(std::string);//loads a particular sigil when given the path as a parameter
     void drawMenu();
     void drawBox(int pos[], int size[], int color[]);
