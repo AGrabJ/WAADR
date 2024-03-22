@@ -201,15 +201,15 @@ int main(int argc, char *argv[])
 
     DeviceState waadr;
     int input, prevInput;
-    prevInput = -1;
+    input = -1;
+    prevInput = -2;
 
     signal(SIGTERM, InterruptHandler);
     signal(SIGINT, InterruptHandler);
-
+    
     //Note for vina for later: FOR LOOP BELOW, consider the possibility of a button being held. do not repeat input in that case.
     while (!interrupt_received)
     {
-        input = -1;
         for (int i = 0; i < 4; i++)
         {
             if (digitalRead(buttonPins[i]) == HIGH)
@@ -217,12 +217,17 @@ int main(int argc, char *argv[])
                 input = i;
                 break;
             }
+            input = -1;
         }
 
         if (input >= 0 && input != prevInput)
         {
             waadr.updateScreen(input);
             prevInput = input;
+        } else if(input >= 0 && prevInput == input){
+            
+        } else{
+            prevInput = -2;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
