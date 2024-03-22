@@ -94,7 +94,7 @@ private:
     int optionPos[8][2] = {{0,0},{0,4},{0,8},{0,12},{21,0},{21,4},{21,8},{21,12}};
     int optionColor[3] = {0,255,0};
     int selColor[3] = {255,255,255};
-    int optionSize[1] = {4,10};
+    int optionSize[2] = {4,10};
     void drawSigil(std::string);//loads a particular sigil when given the path as a parameter
     void drawMenu();
     void drawBox(int pos[], int size[], int color[]);
