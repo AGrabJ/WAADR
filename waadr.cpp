@@ -18,7 +18,7 @@ using rgb_matrix::RGBMatrix;
 
 // Global definitions ------------------------
 
-const int buttonPins[4] = {1, 2, 3, 4}; // ADJUST WITH BUTTON PINS (BCM)
+const int buttonPins[4] = {12, 16, 26, 21}; // ADJUST WITH BUTTON PINS (BCM)
 
 volatile bool interrupt_received = false;
 static void InterruptHandler(int signo)
@@ -166,6 +166,7 @@ void DeviceState::updateScreen(int buttonPressed)
 void DeviceState::drawMenu(){
     //draw main menu here
     //border or highlight the element corresponding to the currSel
+    matrix->Clear();
 }
 
 void DeviceState::drawSigil(std::string path)
@@ -190,6 +191,12 @@ void DeviceState::drawSigil(std::string path)
 int main(int argc, char *argv[])
 {
     wiringPiSetupGpio();
+
+    for(int i = 0; i<4, i++){
+        pinMode(buttonPins[i], INPUT);
+        pullUpDnControl(buttonPins[i], PUD_DOWN);
+    }
+
     Magick::InitializeMagick(NULL);
 
     DeviceState waadr;
