@@ -172,7 +172,7 @@ void DeviceState::drawMenu(){
     //draw main menu here
     //border or highlight the element corresponding to the currSel
     matrix->Clear();
-    
+    drawSigil("sigils/logo.ppm");
     for(int i = 0; i<8; i++){
         if(i == currSel){
             drawBox(optionPos[i],optionSize,selColor);
@@ -180,6 +180,7 @@ void DeviceState::drawMenu(){
             drawBox(optionPos[i],optionSize,optionColor);
         }
     }
+
 
 }
 
