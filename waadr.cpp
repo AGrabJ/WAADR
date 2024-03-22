@@ -92,6 +92,9 @@ private:
     int currState; //currState is 0 if on main menu, 1 if displaying sigil, 2 if pinging, 3 if listening
     int currSel;
     int optionPos[8][2] = {{0,0},{0,4},{0,8},{0,12},{21,0},{21,4},{21,8},{21,12}};
+    int optionColor[3] = {0,255,0};
+    int selColor[3] = {255,255,255};
+    int optionSize[1] = {1};
     void drawSigil(std::string);//loads a particular sigil when given the path as a parameter
     void drawMenu();
     void drawBox(int pos[], int size[], int color[]);
@@ -169,10 +172,13 @@ void DeviceState::drawMenu(){
     //draw main menu here
     //border or highlight the element corresponding to the currSel
     matrix->Clear();
-    int color[3] = {255,255,255};
-    int size[1] = {1};
+    
     for(int i = 0; i<8; i++){
-        drawBox(optionPos[i],size,color);
+        if(i == currSel){
+            drawBox(optionPos[i],optionSize,optionColor);
+        } else{
+            drawBox(optionPos[i],optionSize,selColor);
+        }
     }
 
 }
