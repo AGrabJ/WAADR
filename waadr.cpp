@@ -94,7 +94,7 @@ private:
     int optionPos[8][2] = {{0,0},{0,4},{0,8},{0,12},{21,0},{21,4},{21,8},{21,12}};
     int optionColor[3] = {0,255,0};
     int selColor[3] = {255,255,255};
-    int optionSize[1] = {1};
+    int optionSize[1] = {4,10};
     void drawSigil(std::string);//loads a particular sigil when given the path as a parameter
     void drawMenu();
     void drawBox(int pos[], int size[], int color[]);
@@ -175,16 +175,21 @@ void DeviceState::drawMenu(){
     
     for(int i = 0; i<8; i++){
         if(i == currSel){
-            drawBox(optionPos[i],optionSize,optionColor);
-        } else{
             drawBox(optionPos[i],optionSize,selColor);
+        } else{
+            drawBox(optionPos[i],optionSize,optionColor);
         }
     }
 
 }
 
 void DeviceState::drawBox(int pos[], int size[], int color[]){
-    matrix->SetPixel(pos[0],pos[1],color[0],color[1],color[2]);
+    for(int i = 0; i<size[0]; i++){
+        for(int j = 0; j<size[1]; j++){
+            matrix->SetPixel(pos[0] + i,pos[1] + j,color[0],color[1],color[2]);
+        }
+    }
+    
 }
 
 void DeviceState::drawSigil(std::string path)
