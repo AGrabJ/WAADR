@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 {
     wiringPiSetupGpio();
 
-    for(int i = 0; i<4, i++){
+    for(int i = 0; i<4; i++){
         pinMode(buttonPins[i], INPUT);
         pullUpDnControl(buttonPins[i], PUD_DOWN);
     }
