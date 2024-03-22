@@ -169,8 +169,10 @@ void DeviceState::drawMenu(){
     //draw main menu here
     //border or highlight the element corresponding to the currSel
     matrix->Clear();
+    int color[3] = {255,255,255};
+    int size[1] = {1};
     for(int i = 0; i<8; i++){
-        drawBox(optionPos[i],{1},{255,255,255});
+        drawBox(optionPos[i],size,color);
     }
 
 }
